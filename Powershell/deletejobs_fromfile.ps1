@@ -8,14 +8,14 @@ $results = 'Results.txt'
 
 #Loops through file
 foreach ($lu in $LookUp){ 
-    $jobName, $source = $lu.split('|') 
+    $jobName, $source, $jobId = $lu.split('|') 
    
 	#Get object job
-	$job = Get-ChildItem JAMS::localhost$source -ObjectType job -Recurse -IgnorePredefined | where-object {($_.Name -eq $jobName)}
+	$job = Get-ChildItem JAMS::localhost$source -ObjectType job -Recurse -IgnorePredefined | where-object {($_.jobId -eq $jobId)}
 		
 	$homedirectory = $job.HomeDirectory
 	
-	#Check null
+	#Basic checks for folder delete
 	if (($homedirectory -eq $null) -or ($homedirectory -match "C:\\") -or ($homedirectory -eq "")){
 		Write-Output " $($jobName) WILL NOT BE DELETED : Incomplete data" #>> $results
 	}
@@ -28,9 +28,8 @@ foreach ($lu in $LookUp){
 			$job | Remove-Item -Force -Confirm:$false
 			
 			Write-Output "Job: $($jobName) folders in $($homedirectory) are being deleted " >> $results
-			#This removes folder
-			#Remove-Item –path $homedirectory –recurse				
-            homedirectory.Substring($homedirectory.LastIndexOf('\',$homedirectory.LastIndexOf('\')-1),$homedirectory.Length-$homedirectory.LastIndexOf('\',$homedirectory.LastIndexOf('\')-1))	
+			#This removes folder recursively
+			Remove-Item –path $homedirectory –recurse				            
 		}	
 	}
 }
