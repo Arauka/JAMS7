@@ -10,7 +10,7 @@ $Source = Get-Content -Path YourOwnPathHere -raw
 $path = "YourJAMSPath"
 
 #Select all jobs with old method in path
-$Jobs = Get-ChildItem JD:\Feeds\$path -objectType "Job" -FullObject -Recurse -IgnorePredefined | where-object {($_.MethodName -eq $OldMethod)}
+$Jobs = Get-ChildItem JD:\$path -objectType "Job" -FullObject -Recurse -IgnorePredefined | where-object {($_.MethodName -eq $OldMethod)}
 
 foreach ( $Job in $Jobs ){
     Write-Output "Updating $($Job.Name) From $($Job.Method)" 
